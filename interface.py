@@ -5,6 +5,7 @@ from database import *
 from tkinter import ttk
 #test boutons 
 class boutons_modif():
+
     def addNewWindow(self):
         self.addWindow = Toplevel()
         self.addWindow.title('Ajouter un produit')
@@ -58,9 +59,15 @@ class boutons_modif():
             database.mydb.commit()
             tree.insert('', 'end', text= "", values=(check1, check2, check3, check4, check5, check6))
             self.addWindow.destroy()
-            
-
-
+            database.cursor.close()
+    
+    def deleteRow(self):
+        self.selected_item = tree.selection()[0]
+        self.id_recup = tree.item(self.selected_item)['values'][0]
+        self.sql2 = "DELETE FROM produit WHERE id = {}".format(self.id_recup)
+        database.cursor.execute(self.sql2)
+        database.mydb.commit()
+        tree.delete(self.selected_item)
 
 
 bouton_modif = boutons_modif()
@@ -118,11 +125,8 @@ add_button.grid(row =6, column=0, padx=70, pady=100)
 modify_button = ttk.Button(Modify_frame, text= "Modifier un produit")
 modify_button.grid(row =7, column=0, padx=70, pady=100)
 
-delete_button = ttk.Button(Modify_frame, text= "Supprimer un produit")
+delete_button = ttk.Button(Modify_frame, text= "Supprimer un produit", command=lambda: bouton_modif.deleteRow())
 delete_button.grid(row =8, column=0, padx=70, pady=100)
-
-
-
 
 
 window.mainloop()
