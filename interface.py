@@ -4,8 +4,66 @@ import database
 from database import *
 from tkinter import ttk
 #test boutons 
+class boutons_modif():
+    def addNewWindow(self):
+        self.addWindow = Toplevel()
+        self.addWindow.title('Ajouter un produit')
+        self.addWindow.geometry("500x500")
+
+        self.id_label = tkinter.Label(self.addWindow, text= "ID")
+        self.id_label.grid(row=0, column=0, padx=20, pady=20)
+        self.id_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
+        self.id_entry.grid(row=0, column=1, padx=20, pady=20)
+
+        self.nom_label = tkinter.Label(self.addWindow, text= "NOM")
+        self.nom_label.grid(row=1, column=0, padx=20, pady=20)
+        self.nom_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
+        self.nom_entry.grid(row=1, column=1, padx=20, pady=20)
+
+        self.descriptif_label = tkinter.Label(self.addWindow, text= "DESCRIPTION")
+        self.descriptif_label.grid(row=2, column=0, padx=20, pady=20)
+        self.description_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
+        self.description_entry.grid(row=2, column=1, padx=20, pady=20)
+
+        self.prix_label = tkinter.Label(self.addWindow, text= "PRIX")
+        self.prix_label.grid(row=3, column=0, padx=20, pady=20)
+        self.prix_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
+        self.prix_entry.grid(row=3, column=1, padx=20, pady=20)
+
+        self.quantite_label = tkinter.Label(self.addWindow, text= "QUANTITE")
+        self.quantite_label.grid(row=4, column=0, padx=20, pady=20)
+        self.quantite_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
+        self.quantite_entry.grid(row=4, column=1, padx=20, pady=20)
+
+        self.id_categorie_label = tkinter.Label(self.addWindow, text= "ID_CATEGORIE")
+        self.id_categorie_label.grid(row=5, column=0, padx=20, pady=20)
+        self.id_categorie_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
+        self.id_categorie_entry.grid(row=5, column=1, padx=20, pady=20)
+
+        self.validation_button = ttk.Button(self.addWindow, text="Valider", command=lambda: self.validation())
+        self.validation_button.grid(row= 6, column= 1, padx=20, pady=20)
+
+    def validation(self):
+        check1 = self.id_entry.get()
+        check2 = self.nom_entry.get()
+        check3 = self.description_entry.get()
+        check4 = self.prix_entry.get()
+        check5 = self.quantite_entry.get()
+        check6 = self.id_categorie_entry.get()
+
+        if check1 != "" and check2 != "" and check3 != "" and check4 != "" and check5 != "" and check6 != "":
+            sql = "INSERT INTO produit VALUES (%s, %s, %s, %s, %s, %s)"
+            val = ("{}".format(check1),"{}".format(check2), "{}".format(check3), "{}".format(check4), "{}".format(check5), "{}".format(check6))
+            database.cursor.execute(sql, val)
+            database.mydb.commit()
+            tree.insert('', 'end', text= "", values=(check1, check2, check3, check4, check5, check6))
+            self.addWindow.destroy()
+            
 
 
+
+
+bouton_modif = boutons_modif()
 
 #Configuration de la fenêtre 
 
@@ -54,13 +112,13 @@ for row in database.cursor:
 Modify_frame = tkinter.LabelFrame(frame, text="Modificateur", width= 230, height=700)
 Modify_frame.grid(row=0, column=1, padx=10, pady=10, sticky='e')
 
-add_button = tkinter.Button(Modify_frame, text= "Ajouter un produit")
+add_button = ttk.Button(Modify_frame, text= "Ajouter un produit", command=lambda :bouton_modif.addNewWindow())
 add_button.grid(row =6, column=0, padx=70, pady=100)
 
-modify_button = tkinter.Button(Modify_frame, text= "Modifier un produit")
+modify_button = ttk.Button(Modify_frame, text= "Modifier un produit")
 modify_button.grid(row =7, column=0, padx=70, pady=100)
 
-delete_button = tkinter.Button(Modify_frame, text= "Supprimer un produit")
+delete_button = ttk.Button(Modify_frame, text= "Supprimer un produit")
 delete_button.grid(row =8, column=0, padx=70, pady=100)
 
 
