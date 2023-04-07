@@ -41,10 +41,10 @@ class boutons_modif():
         self.id_categorie_entry = tkinter.Entry(self.addWindow, font=('Times', 12))
         self.id_categorie_entry.grid(row=5, column=1, padx=20, pady=20)
 
-        self.validation_button = ttk.Button(self.addWindow, text="Valider", command=lambda: self.validation())
+        self.validation_button = ttk.Button(self.addWindow, text="Valider", command=lambda: self.validationAdd())
         self.validation_button.grid(row= 6, column= 1, padx=20, pady=20)
 
-    def validation(self):
+    def validationAdd(self):
         check1 = self.id_entry.get()
         check2 = self.nom_entry.get()
         check3 = self.description_entry.get()
@@ -69,6 +69,66 @@ class boutons_modif():
         database.mydb.commit()
         tree.delete(self.selected_item)
 
+    def modifyNewWindow(self):
+        self.selected_item2 = tree.selection()[0]
+        self.modifyWindow = Toplevel()
+        self.modifyWindow.title('Modifier le produit')
+        self.modifyWindow.geometry('500x500')
+
+        self.id_label2 = tkinter.Label(self.modifyWindow, text= "ID")
+        self.id_label2.grid(row=0, column=0, padx=20, pady=20)
+        self.id_entry2 = tkinter.Entry(self.modifyWindow, font=('Times', 12))
+        self.id_entry2.insert(0, "{}".format(tree.item(self.selected_item2)['values'][0]))
+        self.id_entry2.grid(row=0, column=1, padx=20, pady=20)
+
+        self.nom_label2 = tkinter.Label(self.modifyWindow, text= "NOM")
+        self.nom_label2.grid(row=1, column=0, padx=20, pady=20)
+        self.nom_entry2 = tkinter.Entry(self.modifyWindow, font=('Times', 12))
+        self.nom_entry2.insert(0, "{}".format(tree.item(self.selected_item2)['values'][1]))
+        self.nom_entry2.grid(row=1, column=1, padx=20, pady=20)
+
+        self.descriptif_label2 = tkinter.Label(self.modifyWindow, text= "DESCRIPTION")
+        self.descriptif_label2.grid(row=2, column=0, padx=20, pady=20)
+        self.description_entry2 = tkinter.Entry(self.modifyWindow, font=('Times', 12))
+        self.description_entry2.insert(0, "{}".format(tree.item(self.selected_item2)['values'][2]))
+        self.description_entry2.grid(row=2, column=1, padx=20, pady=20)
+
+        self.prix_label2 = tkinter.Label(self.modifyWindow, text= "PRIX")
+        self.prix_label2.grid(row=3, column=0, padx=20, pady=20)
+        self.prix_entry2 = tkinter.Entry(self.modifyWindow, font=('Times', 12))
+        self.prix_entry2.insert(0, "{}".format(tree.item(self.selected_item2)['values'][3]))
+        self.prix_entry2.grid(row=3, column=1, padx=20, pady=20)
+
+        self.quantite_label2 = tkinter.Label(self.modifyWindow, text= "QUANTITE")
+        self.quantite_label2.grid(row=4, column=0, padx=20, pady=20)
+        self.quantite_entry2 = tkinter.Entry(self.modifyWindow, font=('Times', 12))
+        self.quantite_entry2.insert(0, "{}".format(tree.item(self.selected_item2)['values'][4]))
+        self.quantite_entry2.grid(row=4, column=1, padx=20, pady=20)
+
+        self.id_categorie_label2 = tkinter.Label(self.modifyWindow, text= "ID_CATEGORIE")
+        self.id_categorie_label2.grid(row=5, column=0, padx=20, pady=20)
+        self.id_categorie_entry2 = tkinter.Entry(self.modifyWindow, font=('Times', 12))
+        self.id_categorie_entry2.insert(0, "{}".format(tree.item(self.selected_item2)['values'][5]))
+        self.id_categorie_entry2.grid(row=5, column=1, padx=20, pady=20)
+
+        self.validation_button2 = ttk.Button(self.modifyWindow, text="Valider", command=lambda: self.validationModify())
+        self.validation_button2.grid(row= 6, column= 1, padx=20, pady=20)
+    
+    def validationModify(self):
+        check2_1 = self.id_entry2.get()
+        check2_2 = self.nom_entry2.get()
+        check2_3 = self.description_entry2.get()
+        check2_4 = self.prix_entry2.get()
+        check2_5 = self.quantite_entry2.get()
+        check2_6 = self.id_categorie_entry2.get()
+        tree.item(self.selected_item2, values=(check2_1, check2_2, check2_3, check2_4, check2_5, check2_6))
+
+        if check2_1 != "" and check2_2 != "" and check2_3 != "" and check2_4 != "" and check2_5 != "" and check2_6 != "":
+            sql3 = "UPDATE produit SET id = {}, nom = '{}', description = '{}', prix = {}, quantité = {}, id_catégorie = {} WHERE id = {}".format(check2_1, check2_2, check2_3, check2_4, check2_5, check2_6, tree.item(self.selected_item2)['values'][0])
+            database.cursor.execute(sql3)
+            database.mydb.commit()
+            self.modifyWindow.destroy()
+            database.cursor.close()
 
 bouton_modif = boutons_modif()
 
@@ -122,7 +182,7 @@ Modify_frame.grid(row=0, column=1, padx=10, pady=10, sticky='e')
 add_button = ttk.Button(Modify_frame, text= "Ajouter un produit", command=lambda :bouton_modif.addNewWindow())
 add_button.grid(row =6, column=0, padx=70, pady=100)
 
-modify_button = ttk.Button(Modify_frame, text= "Modifier un produit")
+modify_button = ttk.Button(Modify_frame, text= "Modifier un produit", command= lambda : bouton_modif.modifyNewWindow())
 modify_button.grid(row =7, column=0, padx=70, pady=100)
 
 delete_button = ttk.Button(Modify_frame, text= "Supprimer un produit", command=lambda: bouton_modif.deleteRow())
